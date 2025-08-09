@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(cuid())
+  auth0Id    String    @unique // Auth0 user ID
+  name       String?
+  email      String?   @unique
+  shifts     Shift[]
+  createdAt  DateTime  @default(now())
+}
+
+model Shift {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  clockInTime DateTime
+  clockInLat  Float?
+  clockInLng  Float?
+  clockInNote String?
+  clockOutTime DateTime?
+  clockOutLat  Float?
+  clockOutLng  Float?
+  clockOutNote String?
+  createdAt   DateTime @default(now())
+}
+
+model LocationSetting {
+  id       String   @id @default(cuid())
+  name     String
+  lat      Float
+  lng      Float
+  radiusKm Float
+  createdAt DateTime @default(now())
+}
