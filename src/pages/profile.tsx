@@ -1,8 +1,13 @@
 // src/pages/profile.tsx
 import { useUser } from '@auth0/nextjs-auth0';
+import Image from 'next/image';
 
 export default function Profile() {
   const { user, error, isLoading } = useUser();
+
+  const handleLogin = () => {
+    window.location.href = '/api/auth/login';
+  };
 
   if (isLoading) {
     return <div style={{ padding: '20px' }}>Loading profile...</div>;
@@ -16,18 +21,20 @@ export default function Profile() {
     return (
       <div style={{ padding: '20px' }}>
         <p>Please log in to view your profile.</p>
-        <a
-          href="/api/auth/login"
+        <button
+          onClick={handleLogin}
           style={{
             background: '#0070f3',
             padding: '8px 12px',
             borderRadius: '4px',
             color: '#fff',
-            textDecoration: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            marginTop: '8px'
           }}
         >
           Login
-        </a>
+        </button>
       </div>
     );
   }
@@ -36,10 +43,12 @@ export default function Profile() {
     <div style={{ padding: '20px' }}>
       <h1>Profile</h1>
       {user.picture && (
-        <img
+        <Image
           src={user.picture}
           alt={user.name || 'User'}
-          style={{ borderRadius: '50%', width: '80px', marginBottom: '10px' }}
+          width={80}
+          height={80}
+          style={{ borderRadius: '50%', marginBottom: '10px' }}
         />
       )}
       <p><strong>Name:</strong> {user.name}</p>
