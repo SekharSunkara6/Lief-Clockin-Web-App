@@ -29,21 +29,52 @@ export default function Navbar() {
     fetchUser();
   }, []);
 
+  const handleLogin = () => {
+    window.location.href = '/api/auth/login';
+  };
+
+  const handleLogout = () => {
+    window.location.href = '/api/auth/logout';
+  };
+
   if (loading) return <nav>Loading...</nav>;
 
   return (
     <nav style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
       <Link href="/" style={{ marginRight: '15px' }}>Home</Link>
-
       {user ? (
         <>
           <span style={{ marginRight: '15px' }}>
             Welcome, {user.name || user.email}
           </span>
-          <a href="/api/auth/logout">Logout</a>
+          <button
+            onClick={handleLogout}
+            style={{
+              background: '#F44336',
+              color: '#fff',
+              border: 'none',
+              padding: '6px 12px',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+          >
+            Logout
+          </button>
         </>
       ) : (
-        <a href="/api/auth/login">Login</a>
+        <button
+          onClick={handleLogin}
+          style={{
+            background: '#0070f3',
+            color: '#fff',
+            border: 'none',
+            padding: '6px 12px',
+            borderRadius: '3px',
+            cursor: 'pointer'
+          }}
+        >
+          Login
+        </button>
       )}
     </nav>
   );
