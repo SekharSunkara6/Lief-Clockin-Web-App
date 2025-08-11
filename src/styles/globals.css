@@ -40,3 +40,55 @@ a {
     color-scheme: dark;
   }
 }
+
+/* Force all table headers to have black text on light background */
+th {
+  color: black !important;
+  background-color: #eee !important;
+  font-weight: bold;
+  padding: 10px;
+  text-align: left;
+}
+
+td {
+  color: #000 !important;
+  background-color: #fff; 
+}
+
+tr:nth-child(even) td {
+  background-color: #fafafa; /* alternate row color */
+}
+
+/* Force visible table borders */
+table, th, td {
+  border: 1px solid #000 !important; /* black borders */
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+}
+
+/* Info boxes like Current Geofence & Analytics */
+.dashboard-box {
+  border: 1px solid #000 !important;
+  border-radius: 6px;
+  background-color: #fafafa;
+  padding: 10px;
+}
+
+/* 
+.manager-dashboard h1,
+.manager-dashboard h2,
+.manager-dashboard h3,
+.manager-dashboard h4 {
+  color: #000 !important;
+  background-color: #fafafa !important;
+  padding: 4px 8px;
+  display: inline-block;
+  border-radius: 4px;
+} */
+
