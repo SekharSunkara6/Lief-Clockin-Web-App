@@ -8,16 +8,29 @@ export default function ManagerDashboard() {
   const [message, setMessage] = useState("");
   const [current, setCurrent] = useState(null);
   const [staff, setStaff] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0); // 🔑 added for ShiftHistory refresh
 
   useEffect(() => {
-    fetch("/api/geofence")
-      .then((res) => res.json())
-      .then((data) => setCurrent(data.geofence))
-      .catch(() => {});
-    fetch("/api/staff")
-      .then((res) => res.json())
-      .then((data) => setStaff(data.staff || []))
-      .catch(() => {});
+    const fetchData = () => {
+      fetch("/api/geofence")
+        .then((res) => res.json())
+        .then((data) => setCurrent(data.geofence))
+        .catch(() => {});
+      fetch("/api/staff")
+        .then((res) => res.json())
+        .then((data) => setStaff(data.staff || []))
+        .catch(() => {});
+    };
+
+    fetchData(); // initial load
+
+    // ⏱ refresh every 20 seconds so ShiftHistory & staff status update
+    const interval = setInterval(() => {
+      fetchData();
+      setRefreshKey(prev => prev + 1); // this will re-mount ShiftHistory
+    }, 20000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const saveGeofence = async () => {
@@ -44,10 +57,7 @@ export default function ManagerDashboard() {
 
   return (
     <div style={{ maxWidth: "1000px", margin: "20px auto", padding: "16px", color: "#000" }}>
-      
-      {/* MAIN TITLE */}
       <h2 style={{ color: "#fff" }}>Manager Dashboard</h2>
-
       {/* Geofence Form */}
       <h3 style={{ marginTop: "24px", color: "#fff" }}>Set Geofence</h3>
       <input
@@ -84,7 +94,11 @@ export default function ManagerDashboard() {
       >
         Save Geofence
       </button>
-      {message && <p style={{ marginTop: "8px" }}>{message}</p>}
+      {message && (
+        <p style={{ marginTop: "8px", color: "#fff", fontWeight: "bold" }}>
+          {message}
+        </p>
+      )}
 
       {current && (
         <div
@@ -134,16 +148,9 @@ export default function ManagerDashboard() {
         </thead>
         <tbody>
           {staff.map((s, idx) => (
-            <tr
-              key={s.id}
-              style={{ backgroundColor: idx % 2 === 0 ? "#fff" : "#fafafa" }}
-            >
-              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>
-                {s.name}
-              </td>
-              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>
-                {s.email}
-              </td>
+            <tr key={s.id} style={{ backgroundColor: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
+              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>{s.name}</td>
+              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>{s.email}</td>
               <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>
                 {formatTime(s.lastClockIn)}
               </td>
@@ -167,7 +174,7 @@ export default function ManagerDashboard() {
 
       {/* Shift History & Analytics */}
       <h3 style={{ marginTop: "30px", color: "#fff" }}>Shift History</h3>
-      <ShiftHistory />
+      <ShiftHistory key={refreshKey} /> {/* 🔄 this will reload data when refreshKey changes */}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { getSession } from "@auth0/nextjs-auth0";
 const prisma = new PrismaClient();
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
@@ -19,12 +20,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { userId, lat, lng, note } = req.body;
+    const session = await getSession(req, res);
+    let { userId, lat, lng, note } = req.body;
+
+    // ✅ Fallback userId from session if missing
+    if (!userId && session?.user?.dbId) {
+      userId = session.user.dbId;
+    }
+
+    console.log("CLOCKOUT REQ:", { userId, lat, lng, note });
+
     if (!userId || lat == null || lng == null) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // ✅ Ensure the user exists
+    // Ensure the user exists
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       return res.status(400).json({ error: "Invalid userId - no such user in database" });
@@ -44,14 +54,14 @@ export default async function handler(req, res) {
       parseFloat(geofence.centerLng)
     );
 
-    if (distance > parseFloat(geofence.radiusKm)) {
-      return res.status(403).json({
-        error: "You are outside the allowed clock-out perimeter",
-        distance,
-        geofence,
-        userLocation: { lat: latNum, lng: lngNum }
-      });
-    }
+    // if (distance > parseFloat(geofence.radiusKm)) {
+    //   return res.status(403).json({
+    //     error: "You are outside the allowed clock-out perimeter",
+    //     distance,
+    //     geofence,
+    //     userLocation: { lat: latNum, lng: lngNum }
+    //   });
+    // }
 
     const activeShift = await prisma.shift.findFirst({
       where: { userId, clockOutTime: null },
@@ -69,6 +79,8 @@ export default async function handler(req, res) {
         clockOutNote: note || null,
       },
     });
+
+    console.log("CLOCKOUT UPDATED:", updatedShift);
 
     return res.status(200).json({
       message: "Clock-out successful",

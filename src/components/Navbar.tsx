@@ -3,31 +3,43 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 type User = {
+  id?: string;
   name?: string;
   email?: string;
+  nickname?: string;
 };
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Fetch logged-in user profile WITH credentials
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch('/api/auth/me');
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        console.log("Auth.me response status:", res.status);
+
         if (res.ok) {
           const data = await res.json();
-          setUser(data.user || null);
+          console.log("Navbar fetched user data:", data);
+          setUser(data);
         } else {
+          console.log("No user found / not logged in");
           setUser(null);
         }
-      } catch {
+      } catch (err) {
+        console.error("Error fetching user:", err);
         setUser(null);
       }
       setLoading(false);
     }
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    console.log("Navbar user state updated:", user);
+  }, [user]);
 
   const handleLogin = () => {
     window.location.href = '/api/auth/login';
@@ -42,10 +54,11 @@ export default function Navbar() {
   return (
     <nav style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
       <Link href="/" style={{ marginRight: '15px' }}>Home</Link>
-      {user ? (
+
+      {user && user.id ? (
         <>
           <span style={{ marginRight: '15px' }}>
-            Welcome, {user.name || user.email}
+            Welcome, {user.name || user.email || user.nickname}
           </span>
           <button
             onClick={handleLogout}

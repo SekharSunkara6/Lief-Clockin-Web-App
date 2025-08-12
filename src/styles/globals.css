@@ -1,12 +1,14 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light theme colors */
+  --background: #ffffff;   /* Container + page background */
+  --foreground: #171717;   /* Main text color */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark theme colors */
+    --background: #1a1a1a;  /* Container background in dark mode */
+    --foreground: #f5f5f5;  /* Text color in dark mode */
   }
 }
 
@@ -41,9 +43,9 @@ a {
   }
 }
 
-/* Force all table headers to have black text on light background */
+/* ---- TABLE STYLES ---- */
 th {
-  color: black !important;
+  color: #000 !important;
   background-color: #eee !important;
   font-weight: bold;
   padding: 10px;
@@ -52,16 +54,15 @@ th {
 
 td {
   color: #000 !important;
-  background-color: #fff; 
+  background-color: #fff;
 }
 
 tr:nth-child(even) td {
-  background-color: #fafafa; /* alternate row color */
+  background-color: #fafafa;
 }
 
-/* Force visible table borders */
 table, th, td {
-  border: 1px solid #000 !important; /* black borders */
+  border: 1px solid #000 !important;
 }
 
 table {
@@ -72,23 +73,10 @@ th, td {
   padding: 8px;
 }
 
-/* Info boxes like Current Geofence & Analytics */
+/* ---- DASHBOARD BOX STYLES ---- */
 .dashboard-box {
   border: 1px solid #000 !important;
   border-radius: 6px;
   background-color: #fafafa;
   padding: 10px;
 }
-
-/* 
-.manager-dashboard h1,
-.manager-dashboard h2,
-.manager-dashboard h3,
-.manager-dashboard h4 {
-  color: #000 !important;
-  background-color: #fafafa !important;
-  padding: 4px 8px;
-  display: inline-block;
-  border-radius: 4px;
-} */
-

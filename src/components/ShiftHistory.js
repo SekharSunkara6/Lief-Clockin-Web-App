@@ -3,15 +3,32 @@ import { useState, useEffect } from "react";
 export default function ShiftHistory() {
   const [shifts, setShifts] = useState([]);
   const [stats, setStats] = useState(null);
+
   useEffect(() => {
-    fetch("/api/shifts")
-      .then((res) => res.json())
-      .then((data) => {
+  const fetchData = () => {
+    fetch("/api/shifts", { cache: "no-store" }) // ✅ matches your backend file name
+      .then(res => res.json())
+      .then(data => {
         setShifts(data.shifts || []);
         setStats(data.stats || {});
       })
-      .catch((err) => console.error(err));
-  }, []);
+      .catch(console.error);
+  };
+
+  fetchData(); // initial load
+
+  // ✅ Refresh every 10s automatically
+  const interval = setInterval(fetchData, 10000);
+
+  // ✅ Listen for Careworker updates and fetch immediately
+  const onShiftUpdate = () => fetchData();
+  window.addEventListener('shiftUpdated', onShiftUpdate);
+
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener('shiftUpdated', onShiftUpdate);
+  };
+}, []);
 
   const formatTime = (t) => (t ? new Date(t).toLocaleString() : "-");
 
@@ -81,7 +98,7 @@ export default function ShiftHistory() {
                 style={{ backgroundColor: idx % 2 === 0 ? "#fff" : "#fafafa" }}
               >
                 <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>
-                  {s.user?.name || s.user?.email || "-"}
+                  {s.user?.name || s.user?.email || "-"} {/* ✅ now works */}
                 </td>
                 <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>
                   {formatTime(s.clockInTime)}
