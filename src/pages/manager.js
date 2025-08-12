@@ -8,7 +8,7 @@ export default function ManagerDashboard() {
   const [message, setMessage] = useState("");
   const [current, setCurrent] = useState(null);
   const [staff, setStaff] = useState([]);
-  const [refreshKey, setRefreshKey] = useState(0); // 🔑 added for ShiftHistory refresh
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchData = () => {
@@ -22,12 +22,10 @@ export default function ManagerDashboard() {
         .catch(() => {});
     };
 
-    fetchData(); // initial load
-
-    // ⏱ refresh every 20 seconds so ShiftHistory & staff status update
+    fetchData();
     const interval = setInterval(() => {
       fetchData();
-      setRefreshKey(prev => prev + 1); // this will re-mount ShiftHistory
+      setRefreshKey((prev) => prev + 1);
     }, 20000);
 
     return () => clearInterval(interval);
@@ -56,10 +54,11 @@ export default function ManagerDashboard() {
   const formatTime = (t) => (t ? new Date(t).toLocaleString() : "-");
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "20px auto", padding: "16px", color: "#000" }}>
-      <h2 style={{ color: "#fff" }}>Manager Dashboard</h2>
+    <div style={{ maxWidth: "1000px", margin: "20px auto", padding: "16px" }} className="manager-dashboard">
+      <h2>Manager Dashboard</h2>
+
       {/* Geofence Form */}
-      <h3 style={{ marginTop: "24px", color: "#fff" }}>Set Geofence</h3>
+      <h3 style={{ marginTop: "24px" }}>Set Geofence</h3>
       <input
         type="number"
         placeholder="Center Latitude"
@@ -95,7 +94,7 @@ export default function ManagerDashboard() {
         Save Geofence
       </button>
       {message && (
-        <p style={{ marginTop: "8px", color: "#fff", fontWeight: "bold" }}>
+        <p style={{ marginTop: "8px", fontWeight: "bold" }}>
           {message}
         </p>
       )}
@@ -119,7 +118,7 @@ export default function ManagerDashboard() {
       )}
 
       {/* Staff Status Table */}
-      <h3 style={{ marginTop: "30px", color: "#fff" }}>Staff Status</h3>
+      <h3 style={{ marginTop: "30px" }}>Staff Status</h3>
       <table
         style={{
           width: "100%",
@@ -135,7 +134,6 @@ export default function ManagerDashboard() {
               <th
                 key={h}
                 style={{
-                  color: "#000",
                   textAlign: "left",
                   padding: "8px",
                   border: "1px solid #000",
@@ -149,12 +147,12 @@ export default function ManagerDashboard() {
         <tbody>
           {staff.map((s, idx) => (
             <tr key={s.id} style={{ backgroundColor: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
-              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>{s.name}</td>
-              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>{s.email}</td>
-              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>
+              <td style={{ padding: "8px", border: "1px solid #000" }}>{s.name}</td>
+              <td style={{ padding: "8px", border: "1px solid #000" }}>{s.email}</td>
+              <td style={{ padding: "8px", border: "1px solid #000" }}>
                 {formatTime(s.lastClockIn)}
               </td>
-              <td style={{ padding: "8px", color: "#000", border: "1px solid #000" }}>
+              <td style={{ padding: "8px", border: "1px solid #000" }}>
                 {formatTime(s.lastClockOut)}
               </td>
               <td
@@ -173,8 +171,8 @@ export default function ManagerDashboard() {
       </table>
 
       {/* Shift History & Analytics */}
-      <h3 style={{ marginTop: "30px", color: "#fff" }}>Shift History</h3>
-      <ShiftHistory key={refreshKey} /> {/* 🔄 this will reload data when refreshKey changes */}
+      <h3 style={{ marginTop: "30px" }}>Shift History</h3>
+      <ShiftHistory key={refreshKey} />
     </div>
   );
 }

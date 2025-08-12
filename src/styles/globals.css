@@ -80,3 +80,19 @@ th, td {
   background-color: #fafafa;
   padding: 10px;
 }
+
+
+/* For both h2 and h3 headings inside Manager Dashboard */
+.manager-dashboard h2,
+.manager-dashboard h3 {
+  /* Default color for light backgrounds */
+  color: #000;
+}
+
+/* Automatically switch to white text if user/browser is in dark mode */
+@media (prefers-color-scheme: dark) {
+  .manager-dashboard h2,
+  .manager-dashboard h3 {
+    color: #fff;
+  }
+}
