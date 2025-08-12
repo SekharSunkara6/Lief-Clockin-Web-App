@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from '../../lib/prisma'; // adjust path based on location
 import { getSession } from "@auth0/nextjs-auth0"; // ✅ for fallback userId from session
-const prisma = new PrismaClient();
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
   const toRad = (v) => (v * Math.PI) / 180;

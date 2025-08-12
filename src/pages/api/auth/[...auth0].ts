@@ -7,9 +7,7 @@ import {
   handleLogout,
   getSession
 } from '@auth0/nextjs-auth0';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../../../lib/prisma';
 
 interface CustomSession extends Session {
   user: Session["user"] & { dbId?: string };

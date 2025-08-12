@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from '../../lib/prisma'; // adjust path based on location
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
