@@ -28,8 +28,8 @@ A **Next.js** + **Prisma** + **Supabase** + **Auth0**–powered time tracking ap
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone 
-cd 
+git clone https://github.com/SekharSunkara6/Lief-Clockin-Web-App.git
+cd <your-project-folder>
 ```
 
 ### 2️⃣ Install dependencies
